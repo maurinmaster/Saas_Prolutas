@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaaS ProLutas - Gestão de Academias</title>
+    <!-- Incluindo o Tailwind CSS para estilização -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Pequeno ajuste para transições suaves */
+        .hidden { display: none; }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans antialiased">
+
+    <!-- Container Principal -->
+    <div id="app" class="container mx-auto p-4 md:p-8">
+
+        <!-- Seção de Login e Registro (Visível inicialmente) -->
+        <section id="auth-section">
+            <div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-8">
+                <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">SaaS ProLutas</h1>
+                
+                <!-- Abas para Login e Registro -->
+                <div class="flex border-b mb-6">
+                    <button id="show-login-btn" class="flex-1 py-2 text-center font-semibold text-gray-700 border-b-2 border-blue-500">Login</button>
+                    <button id="show-register-btn" class="flex-1 py-2 text-center font-semibold text-gray-500">Registrar Academia</button>
+                </div>
+
+                <!-- Formulário de Login -->
+                <form id="login-form">
+                    <div class="mb-4">
+                        <label for="login-email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                        <input type="email" id="login-email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                    </div>
+                    <div class="mb-6">
+                        <label for="login-password" class="block text-gray-700 text-sm font-bold mb-2">Senha</label>
+                        <input type="password" id="login-password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" required>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Entrar
+                    </button>
+                </form>
+
+                <!-- Formulário de Registro -->
+                <form id="register-form" class="hidden">
+                    <div class="mb-4">
+                        <label for="register-tenant-name" class="block text-gray-700 text-sm font-bold mb-2">Nome da Academia</label>
+                        <input type="text" id="register-tenant-name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="register-email" class="block text-gray-700 text-sm font-bold mb-2">Seu Email (Admin)</label>
+                        <input type="email" id="register-email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                    </div>
+                    <div class="mb-6">
+                        <label for="register-password" class="block text-gray-700 text-sm font-bold mb-2">Sua Senha</label>
+                        <input type="password" id="register-password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" required>
+                    </div>
+                    <button type="submit" class="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Criar Academia
+                    </button>
+                </form>
+                <div id="auth-message" class="mt-4 text-center"></div>
+            </div>
+        </section>
+
+        <!-- Seção Principal do App (Visível após o login) -->
+        <section id="app-section" class="hidden">
+            <header class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-800">Painel da Academia</h1>
+                    <p id="tenant-name" class="text-gray-600"></p>
+                </div>
+                <button id="logout-btn" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                    Sair
+                </button>
+            </header>
+
+            <!-- Área de Gestão de Alunos -->
+            <div class="bg-white rounded-lg shadow-md p-8">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-6">Gestão de Alunos</h2>
+                
+                <!-- Formulário para Adicionar/Editar Aluno -->
+                <form id="aluno-form" class="mb-8 border-b pb-8">
+                    <input type="hidden" id="aluno-id">
+                    <h3 id="form-title" class="text-xl font-semibold mb-4">Adicionar Novo Aluno</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <input type="text" id="aluno-nome" placeholder="Nome Completo*" class="p-2 border rounded" required>
+                        <input type="date" id="aluno-nascimento" class="p-2 border rounded" required>
+                        <input type="text" id="aluno-whatsapp" placeholder="WhatsApp*" class="p-2 border rounded" required>
+                        <input type="number" id="aluno-vencimento" placeholder="Dia do Vencimento*" class="p-2 border rounded" min="1" max="31" required>
+                        <input type="text" id="aluno-cpf" placeholder="CPF" class="p-2 border rounded">
+                        <input type="text" id="aluno-responsavel" placeholder="Nome do Responsável" class="p-2 border rounded">
+                        <input type="text" id="aluno-contato-responsavel" placeholder="Contato do Responsável" class="p-2 border rounded">
+                        <input type="text" id="aluno-foto" placeholder="URL da Foto" class="p-2 border rounded">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="aluno-notificacoes" class="mr-2" checked>
+                            <label for="aluno-notificacoes">Receber Notificações</label>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex space-x-4">
+                        <button type="submit" id="save-aluno-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Salvar Aluno</button>
+                        <button type="button" id="cancel-edit-btn" class="hidden bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Cancelar Edição</button>
+                    </div>
+                </form>
+                <div id="app-message" class="my-4 text-center"></div>
+
+                <!-- Tabela de Alunos -->
+                <h3 class="text-xl font-semibold mb-4">Alunos Cadastrados</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white">
+                        <thead class="bg-gray-200">
+                            <tr>
+                                <th class="py-2 px-4 text-left">Nome</th>
+                                <th class="py-2 px-4 text-left">WhatsApp</th>
+                                <th class="py-2 px-4 text-left">Vencimento</th>
+                                <th class="py-2 px-4 text-left">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="alunos-table-body">
+                            <!-- Linhas da tabela serão inseridas aqui via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Script para interagir com a API -->
+    <script>
+        const API_URL = 'http://127.0.0.1:8000'; // URL da nossa API Backend
+
+        // --- Seletores de Elementos do DOM ---
+        const authSection = document.getElementById('auth-section');
+        const appSection = document.getElementById('app-section');
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const alunoForm = document.getElementById('aluno-form');
+        const showLoginBtn = document.getElementById('show-login-btn');
+        const showRegisterBtn = document.getElementById('show-register-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const alunosTableBody = document.getElementById('alunos-table-body');
+        const authMessage = document.getElementById('auth-message');
+        const appMessage = document.getElementById('app-message');
+        const formTitle = document.getElementById('form-title');
+        const cancelEditBtn = document.getElementById('cancel-edit-btn');
+        const tenantNameEl = document.getElementById('tenant-name');
+        
+        // --- Estado da Aplicação ---
+        let state = {
+            token: localStorage.getItem('prolutas_token'),
+            tenantSchema: localStorage.getItem('prolutas_tenant_schema'),
+            tenantName: localStorage.getItem('prolutas_tenant_name'),
+            alunos: [],
+        };
+
+        // --- Funções de Renderização ---
+        function render() {
+            if (state.token) {
+                authSection.classList.add('hidden');
+                appSection.classList.remove('hidden');
+                tenantNameEl.textContent = `Academia: ${state.tenantName || 'Não identificada'}`;
+                renderAlunos();
+            } else {
+                authSection.classList.remove('hidden');
+                appSection.classList.add('hidden');
+            }
+        }
+
+        function renderAlunos() {
+            alunosTableBody.innerHTML = '';
+            if (state.alunos.length === 0) {
+                alunosTableBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-gray-500">Nenhum aluno cadastrado.</td></tr>`;
+                return;
+            }
+            state.alunos.forEach(aluno => {
+                const row = document.createElement('tr');
+                row.className = 'border-b';
+                row.innerHTML = `
+                    <td class="py-2 px-4">${aluno.nome_completo}</td>
+                    <td class="py-2 px-4">${aluno.whatsapp}</td>
+                    <td class="py-2 px-4">Dia ${aluno.dia_vencimento}</td>
+                    <td class="py-2 px-4">
+                        <button onclick="handleEditAluno(${aluno.id})" class="text-sm bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-2 rounded">Editar</button>
+                        <button onclick="handleDeleteAluno(${aluno.id})" class="text-sm bg-red-500 hover:bg-red-600 text-white py-1 px-2 rounded ml-2">Excluir</button>
+                    </td>
+                `;
+                alunosTableBody.appendChild(row);
+            });
+        }
+        
+        function showMessage(element, text, isError = false) {
+            element.textContent = text;
+            element.className = `my-4 text-center ${isError ? 'text-red-500' : 'text-green-500'}`;
+            setTimeout(() => { element.textContent = '' }, 3000);
+        }
+
+        // --- Funções de Interação com a API ---
+        async function fetchAlunos() {
+            if (!state.token || !state.tenantSchema) return;
+            try {
+                const response = await fetch(`${API_URL}/api/alunos/`, {
+                    headers: {
+                        'Authorization': `Bearer ${state.token}`,
+                        'x-tenant-id': state.tenantSchema
+                    }
+                });
+                if (!response.ok) throw new Error('Falha ao buscar alunos.');
+                state.alunos = await response.json();
+                render();
+            } catch (error) {
+                showMessage(appMessage, error.message, true);
+            }
+        }
+
+        // --- Manipuladores de Eventos (Handlers) ---
+        showLoginBtn.addEventListener('click', () => {
+            loginForm.classList.remove('hidden');
+            registerForm.classList.add('hidden');
+            showLoginBtn.classList.add('border-blue-500', 'text-gray-700');
+            showLoginBtn.classList.remove('text-gray-500');
+            showRegisterBtn.classList.remove('border-blue-500', 'text-gray-700');
+            showRegisterBtn.classList.add('text-gray-500');
+        });
+
+        showRegisterBtn.addEventListener('click', () => {
+            loginForm.classList.add('hidden');
+            registerForm.classList.remove('hidden');
+            showRegisterBtn.classList.add('border-blue-500', 'text-gray-700');
+            showRegisterBtn.classList.remove('text-gray-500');
+            showLoginBtn.classList.remove('border-blue-500', 'text-gray-700');
+            showLoginBtn.classList.add('text-gray-500');
+        });
+
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const tenant_name = document.getElementById('register-tenant-name').value;
+            const owner_email = document.getElementById('register-email').value;
+            const owner_password = document.getElementById('register-password').value;
+
+            try {
+                const response = await fetch(`${API_URL}/api/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tenant_name, owner_email, owner_password })
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.detail || 'Erro ao registrar.');
+                
+                showMessage(authMessage, data.message);
+                registerForm.reset();
+                showLoginBtn.click(); // Muda para a aba de login
+            } catch (error) {
+                showMessage(authMessage, error.message, true);
+            }
+        });
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            const formData = new URLSearchParams();
+            formData.append('username', username);
+            formData.append('password', password);
+
+            try {
+                const response = await fetch(`${API_URL}/api/login/token`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formData
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.detail || 'Erro no login.');
+
+                state.token = data.access_token;
+                localStorage.setItem('prolutas_token', state.token);
+                
+                // Decodificar o token para obter o email e, a partir dele, o tenant
+                // ATENÇÃO: Em produção, os dados do tenant deveriam vir de um endpoint /me
+                const decodedToken = JSON.parse(atob(state.token.split('.')[1]));
+                // Simplificação: o tenant schema é o nome da academia e o email até o @. Não é ideal para produção.
+                // A forma correta seria ter um endpoint GET /api/me que retorna os dados do usuário e do tenant.
+                // Por ora, vamos inferir para simplificar.
+                const responseMe = await fetch(`${API_URL}/api/users/me`, {
+                    headers: { 'Authorization': `Bearer ${state.token}` }
+                });
+                // Como não temos o endpoint /me, vamos inferir e pedir ao usuário
+                const tenantSchema = prompt("Login bem-sucedido! Por favor, confirme o 'schema' da sua academia (ex: academia_dragao_branco):");
+                const tenantName = prompt("E o nome de exibição da sua academia (ex: Academia Dragão Branco):");
+                state.tenantSchema = tenantSchema;
+                state.tenantName = tenantName;
+                localStorage.setItem('prolutas_tenant_schema', tenantSchema);
+                localStorage.setItem('prolutas_tenant_name', tenantName);
+
+                fetchAlunos();
+            } catch (error) {
+                showMessage(authMessage, error.message, true);
+            }
+        });
+        
+        logoutBtn.addEventListener('click', () => {
+            state.token = null;
+            state.tenantSchema = null;
+            state.tenantName = null;
+            state.alunos = [];
+            localStorage.removeItem('prolutas_token');
+            localStorage.removeItem('prolutas_tenant_schema');
+            localStorage.removeItem('prolutas_tenant_name');
+            render();
+        });
+
+        alunoForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('aluno-id').value;
+            const alunoData = {
+                nome_completo: document.getElementById('aluno-nome').value,
+                data_nascimento: document.getElementById('aluno-nascimento').value,
+                whatsapp: document.getElementById('aluno-whatsapp').value,
+                dia_vencimento: parseInt(document.getElementById('aluno-vencimento').value),
+                cpf: document.getElementById('aluno-cpf').value || null,
+                nome_responsavel: document.getElementById('aluno-responsavel').value || null,
+                contato_responsavel: document.getElementById('aluno-contato-responsavel').value || null,
+                foto_url: document.getElementById('aluno-foto').value || null,
+                receber_notificacoes: document.getElementById('aluno-notificacoes').checked,
+            };
+
+            const url = id ? `${API_URL}/api/alunos/${id}` : `${API_URL}/api/alunos/`;
+            const method = id ? 'PUT' : 'POST';
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${state.token}`,
+                        'x-tenant-id': state.tenantSchema
+                    },
+                    body: JSON.stringify(alunoData)
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.detail || 'Erro ao salvar aluno.');
+                
+                showMessage(appMessage, `Aluno ${id ? 'atualizado' : 'criado'} com sucesso!`);
+                resetAlunoForm();
+                fetchAlunos();
+            } catch (error) {
+                showMessage(appMessage, error.message, true);
+            }
+        });
+        
+        cancelEditBtn.addEventListener('click', resetAlunoForm);
+
+        function resetAlunoForm() {
+            alunoForm.reset();
+            document.getElementById('aluno-id').value = '';
+            formTitle.textContent = 'Adicionar Novo Aluno';
+            cancelEditBtn.classList.add('hidden');
+        }
+
+        window.handleEditAluno = (id) => {
+            const aluno = state.alunos.find(a => a.id === id);
+            if (!aluno) return;
+            
+            document.getElementById('aluno-id').value = aluno.id;
+            document.getElementById('aluno-nome').value = aluno.nome_completo;
+            document.getElementById('aluno-nascimento').value = aluno.data_nascimento;
+            document.getElementById('aluno-whatsapp').value = aluno.whatsapp;
+            document.getElementById('aluno-vencimento').value = aluno.dia_vencimento;
+            document.getElementById('aluno-cpf').value = aluno.cpf || '';
+            document.getElementById('aluno-responsavel').value = aluno.nome_responsavel || '';
+            document.getElementById('aluno-contato-responsavel').value = aluno.contato_responsavel || '';
+            document.getElementById('aluno-foto').value = aluno.foto_url || '';
+            document.getElementById('aluno-notificacoes').checked = aluno.receber_notificacoes;
+
+            formTitle.textContent = 'Editando Aluno';
+            cancelEditBtn.classList.remove('hidden');
+            window.scrollTo(0, 0); // Rola para o topo para ver o formulário
+        };
+
+        window.handleDeleteAluno = async (id) => {
+            if (!confirm('Tem certeza que deseja excluir este aluno?')) return;
+
+            try {
+                const response = await fetch(`${API_URL}/api/alunos/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${state.token}`,
+                        'x-tenant-id': state.tenantSchema
+                    }
+                });
+                if (!response.ok) throw new Error('Falha ao excluir aluno.');
+
+                showMessage(appMessage, 'Aluno excluído com sucesso!');
+                fetchAlunos();
+            } catch (error) {
+                showMessage(appMessage, error.message, true);
+            }
+        };
+
+        // --- Inicialização da Aplicação ---
+        document.addEventListener('DOMContentLoaded', () => {
+            if (state.token) {
+                fetchAlunos();
+            } else {
+                render();
+            }
+        });
+
+    </script>
+</body>
+</html>
