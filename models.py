@@ -25,18 +25,24 @@ class Tenant(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, index=True, nullable=False)
     schema_name = Column(String, unique=True, nullable=False)
-    status = Column(String, default='trial')
-    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    # --- CAMPOS DE ASSINATURA ATUALIZADOS ---
+    # Status pode ser: trialing, active, past_due, canceled
+    status = Column(String, default='trialing') 
     trial_ends_at = Column(DateTime, default=lambda: datetime.utcnow() + timedelta(days=30))
     
+    # IDs para conectar com o sistema de pagamento (Stripe)
+    stripe_customer_id = Column(String, unique=True, nullable=True)
+    stripe_subscription_id = Column(String, unique=True, nullable=True)
+    
     owner = relationship("User", back_populates="tenant")
+    created_at = Column(DateTime, default=datetime.utcnow)
+
 
 # --- Tabelas no Schema do Tenant ---
 class Aluno(Base):
     __tablename__ = 'alunos'
     id = Column(Integer, primary_key=True, index=True)
-    
-    # --- CAMPOS ATUALIZADOS ---
     foto_url = Column(String, nullable=True)
     nome_completo = Column(String, index=True, nullable=False)
     data_nascimento = Column(Date, nullable=False)
@@ -46,7 +52,6 @@ class Aluno(Base):
     contato_responsavel = Column(String, nullable=True)
     dia_vencimento = Column(Integer, nullable=False)
     receber_notificacoes = Column(Boolean, default=True)
-    
-    # Campos antigos que podem ser mantidos para outros usos
     modalidade = Column(String, nullable=True)
     faixa = Column(String, nullable=True)
+

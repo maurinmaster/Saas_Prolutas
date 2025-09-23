@@ -2,8 +2,7 @@
 
 from pydantic import BaseModel, constr, EmailStr
 from typing import Optional, List
-from datetime import date
-from database import Base
+from datetime import date, datetime # Import datetime
 
 # --- Schemas de Autenticação e Usuário ---
 class UserBase(BaseModel):
@@ -15,6 +14,26 @@ class UserSchema(UserBase):
     class Config:
         orm_mode = True
 
+# --- NOVOS SCHEMAS PARA TENANT E DADOS DO USUÁRIO ---
+
+# Schema para exibir os dados do Tenant de forma segura na API
+class TenantSchema(BaseModel):
+    id: int
+    name: str
+    schema_name: str
+    status: str
+    trial_ends_at: Optional[datetime] = None
+    
+    class Config:
+        orm_mode = True
+
+# Schema para o futuro endpoint /api/me
+# Ele retornará os dados do usuário logado e da sua academia (tenant)
+class MeSchema(BaseModel):
+    user: UserSchema
+    tenant: Optional[TenantSchema] = None
+
+
 class TenantRegistration(BaseModel):
     tenant_name: constr(min_length=3, max_length=50)
     owner_email: EmailStr
@@ -23,7 +42,7 @@ class TenantRegistration(BaseModel):
 class TokenData(BaseModel):
     email: str | None = None
 
-# --- Schemas para Alunos (ATUALIZADOS) ---
+# --- Schemas para Alunos ---
 class AlunoBase(BaseModel):
     nome_completo: str
     data_nascimento: date
@@ -57,3 +76,4 @@ class AlunoSchema(AlunoBase):
     id: int
     class Config:
         orm_mode = True
+
