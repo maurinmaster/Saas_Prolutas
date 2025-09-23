@@ -16,12 +16,11 @@
     <!-- Container Principal -->
     <div id="app" class="container mx-auto p-4 md:p-8">
 
-        <!-- Seção de Login e Registro (Visível inicialmente) -->
+        <!-- Seção de Login e Registro -->
         <section id="auth-section">
             <div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-8">
                 <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">SaaS ProLutas</h1>
                 
-                <!-- Abas para Login e Registro -->
                 <div class="flex border-b mb-6">
                     <button id="show-login-btn" class="flex-1 py-2 text-center font-semibold text-gray-700 border-b-2 border-blue-500">Login</button>
                     <button id="show-register-btn" class="flex-1 py-2 text-center font-semibold text-gray-500">Registrar Academia</button>
@@ -42,19 +41,27 @@
                     </button>
                 </form>
 
-                <!-- Formulário de Registro -->
+                <!-- Formulário de Registro (ATUALIZADO) -->
                 <form id="register-form" class="hidden">
                     <div class="mb-4">
                         <label for="register-tenant-name" class="block text-gray-700 text-sm font-bold mb-2">Nome da Academia</label>
-                        <input type="text" id="register-tenant-name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                        <input type="text" id="register-tenant-name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
                     </div>
                     <div class="mb-4">
                         <label for="register-email" class="block text-gray-700 text-sm font-bold mb-2">Seu Email (Admin)</label>
-                        <input type="email" id="register-email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                        <input type="email" id="register-email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="register-cpf" class="block text-gray-700 text-sm font-bold mb-2">Seu CPF</label>
+                        <input type="text" id="register-cpf" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="register-password" class="block text-gray-700 text-sm font-bold mb-2">Sua Senha</label>
+                        <input type="password" id="register-password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
                     </div>
                     <div class="mb-6">
-                        <label for="register-password" class="block text-gray-700 text-sm font-bold mb-2">Sua Senha</label>
-                        <input type="password" id="register-password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" required>
+                        <label for="register-password-confirm" class="block text-gray-700 text-sm font-bold mb-2">Repetir Senha</label>
+                        <input type="password" id="register-password-confirm" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
                     </div>
                     <button type="submit" class="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                         Criar Academia

@@ -6,12 +6,14 @@ from database import Base
 from datetime import datetime, timedelta
 
 # --- Tabelas no Schema 'public' ---
+# --- Tabelas no Schema 'public' ---
 class User(Base):
     __tablename__ = 'users'
     __table_args__ = {'schema': 'public'}
     
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True, nullable=False)
+    cpf = Column(String, unique=True, index=True, nullable=False) # CAMPO ADICIONADO
     hashed_password = Column(String, nullable=False)
     is_saas_admin = Column(Boolean, default=False)
     tenant_id = Column(Integer, ForeignKey('public.tenants.id'), nullable=True)
@@ -26,23 +28,20 @@ class Tenant(Base):
     name = Column(String, unique=True, index=True, nullable=False)
     schema_name = Column(String, unique=True, nullable=False)
     
-    # --- CAMPOS DE ASSINATURA ATUALIZADOS ---
-    # Status pode ser: trialing, active, past_due, canceled
-    status = Column(String, default='trialing') 
-    trial_ends_at = Column(DateTime, default=lambda: datetime.utcnow() + timedelta(days=30))
-    
-    # IDs para conectar com o sistema de pagamento (Stripe)
-    stripe_customer_id = Column(String, unique=True, nullable=True)
-    stripe_subscription_id = Column(String, unique=True, nullable=True)
-    
-    owner = relationship("User", back_populates="tenant")
+    # Campos de assinatura
+    status = Column(String, default='trial') # trial, active, inactive, past_due, canceled
     created_at = Column(DateTime, default=datetime.utcnow)
+    trial_ends_at = Column(DateTime, default=lambda: datetime.utcnow() + timedelta(days=30))
+    stripe_customer_id = Column(String, unique=True, index=True, nullable=True)
+    stripe_subscription_id = Column(String, unique=True, nullable=True)
 
+    owner = relationship("User", back_populates="tenant")
 
 # --- Tabelas no Schema do Tenant ---
 class Aluno(Base):
     __tablename__ = 'alunos'
     id = Column(Integer, primary_key=True, index=True)
+    
     foto_url = Column(String, nullable=True)
     nome_completo = Column(String, index=True, nullable=False)
     data_nascimento = Column(Date, nullable=False)

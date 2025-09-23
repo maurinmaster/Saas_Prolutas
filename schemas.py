@@ -1,8 +1,9 @@
 # schemas.py
 
-from pydantic import BaseModel, constr, EmailStr
+from pydantic import BaseModel, constr, EmailStr, validator
 from typing import Optional, List
-from datetime import date, datetime # Import datetime
+from datetime import date
+from database import Base
 
 # --- Schemas de Autenticação e Usuário ---
 class UserBase(BaseModel):
@@ -10,37 +11,34 @@ class UserBase(BaseModel):
 
 class UserSchema(UserBase):
     id: int
+    cpf: str
     is_saas_admin: bool
     class Config:
         orm_mode = True
 
-# --- NOVOS SCHEMAS PARA TENANT E DADOS DO USUÁRIO ---
+# ATUALIZADO
+class TenantRegistration(BaseModel):
+    tenant_name: constr(min_length=3, max_length=50)
+    owner_email: EmailStr
+    owner_cpf: str
+    owner_password: str
+    password_confirm: str
 
-# Schema para exibir os dados do Tenant de forma segura na API
+class TokenData(BaseModel):
+    email: str | None = None
+
 class TenantSchema(BaseModel):
     id: int
     name: str
     schema_name: str
     status: str
-    trial_ends_at: Optional[datetime] = None
-    
+    trial_ends_at: date
     class Config:
         orm_mode = True
 
-# Schema para o futuro endpoint /api/me
-# Ele retornará os dados do usuário logado e da sua academia (tenant)
 class MeSchema(BaseModel):
     user: UserSchema
-    tenant: Optional[TenantSchema] = None
-
-
-class TenantRegistration(BaseModel):
-    tenant_name: constr(min_length=3, max_length=50)
-    owner_email: EmailStr
-    owner_password: str
-
-class TokenData(BaseModel):
-    email: str | None = None
+    tenant: TenantSchema
 
 # --- Schemas para Alunos ---
 class AlunoBase(BaseModel):
